@@ -1,4 +1,5 @@
-# buyanything_vue_cli3
+# Buy Anything Vue CLI3
+只有買不完，沒有買不到
 
 ## Project setup
 ```
