@@ -7,6 +7,7 @@ import cartsModules from './store/carts';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  // 避免在 production 環境中使用嚴謹模式
   strict: process.env.VUE_APP_NODE_ENV !== 'production',
   state: {
     isLoading: false,
@@ -17,9 +18,11 @@ export default new Vuex.Store({
     ISLOADING(state, payload) {
       state.isLoading = payload;
     },
+    // pagination
     PAGES(state, payload) {
       state.pagination = payload;
     },
+    // Alert Message
     UPDATEMESSAGE(state, payload) {
       state.messages.push(payload);
     },
@@ -38,6 +41,7 @@ export default new Vuex.Store({
     getPagination(context, payload) {
       context.commit('PAGES', payload);
     },
+    // Alert Message
     updateMessage(context, { message, status }) {
       const timestamp = Math.floor(new Date() / 1000);
       const messages = {
