@@ -38,10 +38,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  // 透過 props 接受外部 data
-  props: ['pagination'],
   methods: {
+    // 先透過 vuex products 取得分頁 data，再透過 getPage 來取得點擊的分頁
     getPage(page) {
       // 點擊的頁數與目前頁數相同時，不要觸發點擊事件
       if (page === this.pagination.current_page) return;
@@ -49,6 +50,9 @@ export default {
       this.$emit('getPage', page);
     },
   },
+  computed: {
+    ...mapGetters(['pagination']),
+  }
 };
 </script>
 

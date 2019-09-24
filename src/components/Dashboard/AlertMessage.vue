@@ -20,46 +20,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'Navbar',
   data() {
-    return {
-      messages: [],
-    };
+    return {};
   },
   methods: {
     updateMessage(message, status) {
-      const timestamp = Math.floor(new Date() / 1000);
-      this.messages.push({
-        message,
-        status,
-        timestamp,
-      });
-      this.removeMessageWithTiming(timestamp);
+      this.$store.dispatch('updateMessage', { message, status });
     },
     removeMessage(num) {
-      this.messages.splice(num, 1);
+      this.$store.dispatch('removeMessage', num);
     },
     removeMessageWithTiming(timestamp) {
-      const self = this;
-      setTimeout(() => {
-        self.messages.forEach((item, i) => {
-          if (item.timestamp === timestamp) {
-            self.messages.splice(i, 1);
-          }
-        });
-      }, 3000);
+      this.$store.dispatch('removeMessageWithTiming', timestamp);
     },
   },
-  created() {
-    const self = this;
-    // 自定義名稱 'messsage:push'
-    // message: 傳入參數
-    // status: 樣式，預設值為 warning
-    self.$bus.$on('message:push', (message, status = 'warning') => {
-      self.updateMessage(message, status);
-    });
-    // self.$bus.$emit('message:push', message, status)
+  computed: {
+    ...mapGetters(['messages']),
   },
 };
 </script>

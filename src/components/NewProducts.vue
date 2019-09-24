@@ -18,36 +18,23 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ProductCard from '@/components/ProductCard.vue';
 
 export default {
   data() {
-    return {
-      allProducts: [],
-      isLoading: false,
-    };
+    return {};
   },
-  created() {
-    this.getAllProducts();
-  },
-  methods: {
-    getAllProducts() {
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/products/all`;
-      const self = this;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.allProducts = [...response.data.products];
-          self.isLoading = false;
-        }
-      });
-    },
-  },
+  created() {},
+  methods: {},
   computed: {
     filterNewProduct() {
       const self = this;
       return self.allProducts.filter(item => item.is_enabled !== 1);
     },
+    // 透過 Header 取得 allProducts 讓 filterNewProduct 能過濾產品
+    ...mapGetters('productsModules', ['allProducts']),
+    ...mapGetters(['isLoading']),
   },
   components: {
     ProductCard,

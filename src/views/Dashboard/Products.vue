@@ -272,6 +272,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import Pagination from '@/components/Pagination.vue';
 
@@ -285,7 +286,6 @@ export default {
       status: {
         fileUpLoading: false,
       },
-      pagination: {},
       page: 1,
     };
   },
@@ -302,7 +302,7 @@ export default {
         self.products = response.data.products;
         // console.log('products', self.products);
         self.isLoading = false;
-        self.pagination = response.data.pagination;
+        self.$store.dispatch('getPagination', response.data.pagination);
       });
     },
     openModal(isNew, item, isDelete = false) {
@@ -339,10 +339,17 @@ export default {
             // 建立完產品資料後，關閉 Modal，並重新取得產品資料
             $('#productModal').modal('hide');
             self.getProducts(self.page);
+            self.$store.dispatch('updateMessage', {
+              message: response.data.message,
+              status: 'success',
+            });
           } else {
             $('#productModal').modal('hide');
             self.getProducts(self.page);
-            self.$bus.$emit('message:push', '更新失敗', 'danger');
+            self.$store.dispatch('updateMessage', {
+              message: '更新失敗',
+              status: 'danger',
+            });
           }
         },
       );
@@ -355,11 +362,18 @@ export default {
           // 刪除產品資料後，關閉 Modal，並重新取得產品資料 */
           $('#deleteModal').modal('hide');
           self.getProducts(this.page);
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'danger',
+          });
         } else {
           // 刪除失敗顯示訊息
           $('#deleteModal').modal('hide');
           self.getProducts(self.page);
-          self.$bus.$emit('message:push', response.data.message, 'danger');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'danger',
+          });
         }
       });
     },
@@ -373,31 +387,35 @@ export default {
       formData.append('file-to-upload', uploadedFile);
       const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/admin/upload`;
       self.status.fileUpLoading = true;
-      this.$http
-        .post(api, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          if (response.data.success) {
-            // 由於 data 沒有綁定 imageUrl，所以傳送回來的 url 是無法加入到 Vue 的 data 監控
-            // self.tempProduct.imageUrl = response.data.imageUrl
-            // 透過 $set 重新加入到 Vue 的 data 監控
-            self.$set(self.tempProduct, 'imageUrl', response.data.imageUrl);
-            self.status.fileUpLoading = false;
-            // 上傳成功後，清空 input file
-            $('#customFile').val('');
-          } else {
-            let errorMessage = response.data.message;
-            if (typeof response.data.message === 'object') {
-              errorMessage = response.data.message.message;
-            }
-            this.$bus.$emit('message:push', errorMessage, 'danger');
-            self.status.fileUpLoading = false;
+      this.$http.post(api, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((response) => {
+        if (response.data.success) {
+          // 由於 data 沒有綁定 imageUrl，所以傳送回來的 url 是無法加入到 Vue 的 data 監控
+          // self.tempProduct.imageUrl = response.data.imageUrl
+          // 透過 $set 重新加入到 Vue 的 data 監控
+          self.$set(self.tempProduct, 'imageUrl', response.data.imageUrl);
+          self.status.fileUpLoading = false;
+          // 上傳成功後，清空 input file
+          $('#customFile').val('');
+        } else {
+          let errorMessage = response.data.message;
+          if (typeof response.data.message === 'object') {
+            errorMessage = response.data.message.message;
           }
-        });
+          self.$store.dispatch('updateMessage', {
+            message: errorMessage,
+            status: 'danger',
+          });
+          self.status.fileUpLoading = false;
+        }
+      });
     },
+  },
+  computed: {
+    ...mapGetters(['pagination']),
   },
   components: {
     Pagination,

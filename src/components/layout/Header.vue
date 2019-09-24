@@ -146,67 +146,31 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import $ from 'jquery';
 import Alert from '@/components/Dashboard/AlertMessage.vue';
 
 export default {
   data() {
     return {
-      carts: [],
-      allProducts: [],
       searchResultArray: [],
-      total: 0,
       status: {
         deleteCartItem: '',
       },
       search: '',
-      isLoading: false,
     };
   },
   created() {
     const self = this;
     self.getCartList();
-    this.getAllProducts();
-
-    // 自定義名稱 'updateCart'
-    self.$bus.$on('updateCart', () => {
-      self.getCartList();
-    });
+    self.getAllProducts();
   },
   methods: {
-    getAllProducts() {
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/products/all`;
-      const self = this;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.allProducts = [...response.data.products];
-          self.isLoading = false;
-        }
-      });
-    },
-    getCartList() {
-      const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart`;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.carts = [...response.data.data.carts];
-          self.total = response.data.data.total;
-          self.isLoading = false;
-        }
-      });
-    },
     deleteCartItem(id) {
       const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart/${id}`;
       self.status.deleteCartItem = id;
-      self.$http.delete(api).then((response) => {
-        if (response.data.success) {
-          self.getCartList();
-          self.$bus.$emit('message:push', response.data.message, 'danger');
-          self.status.deleteCartItem = '';
-        }
+      self.$store.dispatch('cartsModules/deleteCartItem', id).then(() => {
+        self.status.deleteCartItem = '';
       });
     },
     openList(isSearch = false) {
@@ -231,8 +195,9 @@ export default {
       const self = this;
       $('.cart-dropdown-menu').hide();
       // 當 cart dropdown 在 Checkout 元件時，避免點擊到 結帳中 button
-      if (self.$route.name === 'Checkout') return;
+      if (self.$route.name === 'Carts') return;
       self.$router.push('/checkout');
+      $('.jq-header-dropdown-cart-menu').hide();
     },
     searchProducts() {
       const self = this;
@@ -257,6 +222,13 @@ export default {
         }
       });
     },
+    ...mapActions('productsModules', ['getAllProducts']),
+    // 取得購物車內容
+    ...mapActions('cartsModules', ['getCartList']),
+  },
+  computed: {
+    ...mapGetters('productsModules', ['allProducts']),
+    ...mapGetters('cartsModules', ['carts', 'total']),
   },
   components: {
     Alert,

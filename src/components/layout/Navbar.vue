@@ -84,31 +84,19 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   data() {
-    return {
-      carts: [],
-    };
+    return {};
   },
-  created() {
-    const self = this;
-    self.getCartList();
-
-    // 自定義名稱 'updateCart:nav'
-    self.$bus.$on('updateCart:nav', () => {
-      self.getCartList();
-    });
-  },
+  created() {},
   methods: {
-    getCartList() {
-      const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart`;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.carts = [...response.data.data.carts];
-        }
-      });
-    },
+    // 透過 Header 取得 getCartList 行為
+    ...mapActions('cartsModules', ['getCartList']),
+  },
+  computed: {
+    ...mapGetters('cartsModules', ['carts']),
   },
 };
 </script>

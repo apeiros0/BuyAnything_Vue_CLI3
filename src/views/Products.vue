@@ -51,50 +51,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ProductCard from '@/components/ProductCard.vue';
 import Pagination from '@/components/Pagination.vue';
 
 export default {
-  // 接收參數
+  // 接收網址傳遞過來的參數
   props: ['category'],
   data() {
     return {
-      products: [],
-      allProducts: [],
       pagination: {},
-      isLoading: false,
       categoryName: '',
     };
   },
   created() {
     this.categoryName = this.$route.query.category || ''; // 如果其他頁面有傳遞 分類 的參數，便使用其值
     this.getProducts();
-    this.getAllProducts();
   },
   methods: {
     getProducts(page = 1) {
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/products?page=${page}`;
-      const self = this;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.products = [...response.data.products];
-          self.pagination = { ...response.data.pagination };
-          self.isLoading = false;
-        }
-      });
-    },
-    // 取得全部商品 (分類用)
-    getAllProducts() {
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/products/all`;
-      const self = this;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.allProducts = [...response.data.products];
-          self.isLoading = false;
-        }
-      });
+      this.$store.dispatch('productsModules/getProducts', page);
     },
   },
   computed: {
@@ -109,12 +85,9 @@ export default {
         item => item.category === self.categoryName,
       );
     },
-    filterCategory() {
-      const self = this;
-      return self.allProducts
-        .map(item => item.category)
-        .filter((item, index, array) => array.indexOf(item) === index);
-    },
+    // allProducts 透過 Header 取得 data
+    ...mapGetters('productsModules', ['products', 'allProducts', 'filterCategory']),
+    ...mapGetters(['isLoading']),
   },
   components: {
     ProductCard,

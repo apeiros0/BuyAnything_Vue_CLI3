@@ -9,9 +9,9 @@ import zhTW from 'vee-validate/dist/locale/zh_TW';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 import router from './router';
-import './bus';
 import CurrencyFilter from './filters/currency';
-import timeFormatFilter from './filters/timeFormat';
+import timeFormatFilter from './filters/time_format';
+import store from './store';
 
 Vue.config.productionTip = false;
 
@@ -40,7 +40,8 @@ Vue.filter('timeFormat', timeFormatFilter);
 new Vue({
   router,
   i18n,
-  render: h => h(App),
+  store,
+  render: h => h(App)
 }).$mount('#app');
 
 // 換頁時，檢查是否有持續登入

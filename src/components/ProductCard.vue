@@ -30,7 +30,7 @@
         @click="addToCart"
         :disabled="product.is_enabled !== 1 || status.cartLoading"
       >
-        <i class="fas fa-spinner fa-pulse" v-if="status.cartLoading"></i>
+        <i class="fas fa-spinner fa-pulse mr-2" v-if="status.cartLoading"></i>
         <span v-if="product.is_enabled !== 1">即將上市</span>
         <span v-else>加入購物車</span>
       </button>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+// import { mapGetters } from 'vuex';
+
 export default {
   props: ['product'],
   data() {
@@ -55,23 +57,18 @@ export default {
       self.$router.push(`/product_info/${productId}`);
     },
     addToCart() {
-      const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart`;
-      const cart = {
-        product_id: self.product.id,
+      this.status.cartLoading = true;
+      this.$store.dispatch('cartsModules/addToCart', {
+        // id 要對應解構的 property
+        id: this.product.id,
         qty: 1,
-      };
-      self.status.cartLoading = true;
-      self.$http.post(api, { data: cart }).then((response) => {
-        if (response.data.success) {
-          self.status.cartLoading = false;
-          self.$bus.$emit('message:push', response.data.message, 'success');
-          self.$bus.$emit('updateCart');
-          self.$bus.$emit('updateCart:nav');
-        }
+      }).then(() => {
+        // 透過 Promise，當資料成功回傳關閉 cartLoading
+        this.status.cartLoading = false;
       });
     },
   },
+  computed: {},
 };
 </script>
 

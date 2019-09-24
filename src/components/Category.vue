@@ -57,35 +57,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
-    return {
-      allProducts: [],
-    };
-  },
-  created() {
-    this.getAllProducts();
-  },
-  methods: {
-    getAllProducts() {
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/products/all`;
-      const self = this;
-      self.isLoading = true;
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.allProducts = [...response.data.products];
-          self.isLoading = false;
-        }
-      });
-    },
+    return {};
   },
   computed: {
-    filterCategory() {
-      const self = this;
-      return self.allProducts
-        .map(item => item.category)
-        .filter((item, index, array) => array.indexOf(item) === index);
-    },
+    // 由 Header 取得 allProducts，所以能進行過濾
+    ...mapGetters('productsModules', ['filterCategory']),
   },
 };
 </script>

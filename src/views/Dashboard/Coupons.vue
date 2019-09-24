@@ -208,6 +208,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import Pagination from '@/components/Pagination.vue';
 
@@ -218,7 +219,6 @@ export default {
       tempCoupon: {},
       isNew: false,
       isLoading: false,
-      pagination: {},
       status: {
         editLoading: false,
         deleteLoading: false,
@@ -238,7 +238,7 @@ export default {
       self.$http.get(api).then((response) => {
         self.coupons = response.data.coupons;
         self.isLoading = false;
-        self.pagination = response.data.pagination;
+        self.$store.dispatch('getPagination', response.data.pagination);
       });
     },
     openModal(isNew, item, isDelete = false) {
@@ -290,11 +290,17 @@ export default {
         if (response.data.success) {
           $('#couponModal').modal('hide');
           self.getCoupons(self.page);
-          self.$bus.$emit('message:push', response.data.message, 'success');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'success',
+          });
         } else {
           $('#couponModal').modal('hide');
           self.getCoupons(self.page);
-          self.$bus.$emit('message:push', '更新失敗', 'danger');
+          self.$store.dispatch('updateMessage', {
+            message: '更新失敗',
+            status: 'danger',
+          });
         }
         self.status.editLoading = false;
       });
@@ -307,7 +313,10 @@ export default {
         if (response.data.success) {
           $('#deleteModal').modal('hide');
           self.getCoupons(self.page);
-          self.$bus.$emit('message:push', response.data.message, 'danger');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'danger',
+          });
           self.status.deleteLoading = false;
         }
       });
@@ -342,6 +351,7 @@ export default {
       });
       return tempArray;
     },
+    ...mapGetters(['pagination']),
   },
   components: {
     Pagination,

@@ -111,7 +111,6 @@ export default {
       productId: '',
       product: {},
       productQty: 1,
-      isLoading: false,
       status: {
         cartLoading: false,
       },
@@ -136,23 +135,16 @@ export default {
     },
     addToCart() {
       const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart`;
       if (Number.isNaN(self.productQty)) {
         self.productQty = 1;
       }
-      const cart = {
-        product_id: self.productId,
-        qty: Math.abs(self.productQty), // 將 負號 轉為正值
-      };
       self.status.cartLoading = true;
-      self.$http.post(api, { data: cart }).then((response) => {
-        if (response.data.success) {
-          self.productQty = 1;
-          self.status.cartLoading = false;
-          self.$bus.$emit('message:push', response.data.message, 'success');
-          self.$bus.$emit('updateCart');
-          self.$bus.$emit('updateCart:nav');
-        }
+      self.$store.dispatch('cartsModules/addToCart', {
+        id: self.productId,
+        qty: Math.abs(self.productQty), // 將 負號 轉為正值
+      }).then(() => {
+        self.status.cartLoading = false;
+        self.productQty = 1;
       });
     },
     calculateQty(isAdd) {

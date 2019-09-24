@@ -62,7 +62,8 @@
               <tr>
                 <th scope="col" class="text-white">商品名稱</th>
                 <th scope="col" class="text-right text-white" width="60">數量</th>
-                <th scope="col" class="text-right text-white" width="100">金額</th>
+                <th scope="col" class="text-right text-white" width="100">原價</th>
+                <th scope="col" class="text-right text-white" width="100">打折後</th>
               </tr>
             </thead>
             <tbody>
@@ -72,19 +73,23 @@
                   {{ item.qty }}/{{ item.product.unit }}
                 </td>
                 <td class="text-right">
+                  <del v-if="item.total !== item.final_total">{{ item.total | currency }}</del>
+                  <span v-else>{{ item.total | currency }}</span>
+                </td>
+                <td class="text-right">
                   {{ item.final_total | currency }}
                 </td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="2" class="text-right">總計</td>
+                <td colspan="3" class="text-right">總計</td>
                 <td class="text-right text-success font-weight-bold h5">
                   {{ order.total | currency }}
                 </td>
               </tr>
               <tr v-if="order.is_paid">
-                <td colspan="3">
+                <td colspan="4">
                   <div class="d-flex justify-content-end mt-3">
                     <router-link
                       class="btn btn-dark btn-block btn-lg mr-auto"
@@ -141,7 +146,10 @@ export default {
         if (response.data.success) {
           this.getOrder();
           self.status.payLoading = false;
-          self.$bus.$emit('message:push', response.data.message, 'success');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'success'
+          });
         }
       });
     },

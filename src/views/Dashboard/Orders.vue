@@ -152,6 +152,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import Pagination from '@/components/Pagination.vue';
 
@@ -160,7 +161,6 @@ export default {
     return {
       isLoading: false,
       orders: [],
-      pagination: {},
       tempOrder: {},
       page: 1,
     };
@@ -178,7 +178,7 @@ export default {
         if (response.data.success) {
           self.isLoading = false;
           self.orders = [...response.data.orders];
-          self.pagination = { ...response.data.pagination };
+          self.$store.dispatch('getPagination', response.data.pagination);
         }
       });
     },
@@ -194,12 +194,21 @@ export default {
         if (response.data.success) {
           $('#orderModal').modal('hide');
           self.getOrders(self.page);
-          self.$bus.$emit('message:push', response.data.message, 'success');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'success',
+          });
         } else {
-          self.$bus.$emit('message:push', response.data.message, 'danger');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'danger',
+          });
         }
       });
     },
+  },
+  computed: {
+    ...mapGetters(['pagination']),
   },
   components: {
     Pagination,

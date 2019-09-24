@@ -149,7 +149,7 @@
               </tr>
             </tbody>
             <tfoot>
-              <tr v-if="!status.isAddCoupon">
+              <tr v-if="finalTotal === total">
                 <td colspan="3" class="text-right">
                   總計
                 </td>
@@ -157,13 +157,13 @@
                   {{ total | currency }}
                 </td>
               </tr>
-              <tr v-if="status.isAddCoupon">
+              <tr v-if="finalTotal !== total">
                 <td colspan="3" class="text-right">總計</td>
                 <td class="text-right">
                   <del>{{ total | currency }}</del>
                 </td>
               </tr>
-              <tr v-if="status.isAddCoupon">
+              <tr v-if="finalTotal !== total">
                 <td colspan="3" class="text-right">打折後</td>
                 <td class="text-right text-success font-weight-bold h5">
                   {{ finalTotal | currency }}
@@ -220,14 +220,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ProcessBar from '@/components/ProcessBar.vue';
 
 export default {
   data() {
     return {
-      carts: [],
-      total: 0,
-      finalTotal: 0,
       couponCode: '',
       status: {
         isAddCoupon: false,
@@ -244,46 +242,11 @@ export default {
       isLoading: false,
     };
   },
-  created() {
-    this.getCartList();
-  },
   methods: {
-    getCartList() {
-      const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart`;
-      if (!self.status.deleteCartItem) {
-        self.isLoading = true;
-      }
-      self.$http.get(api).then((response) => {
-        if (response.data.success) {
-          self.carts = [...response.data.data.carts];
-          self.total = response.data.data.total;
-          self.finalTotal = response.data.data.final_total;
-          self.isLoading = false;
-          // 當有套用優惠券時，isAddCoupon 為 true (避免重新整理後，isAddCoupon 的 data 跑掉)
-          self.status.isAddCoupon = self.carts.some((item) => {
-            if (item.coupon) {
-              return item.coupon.is_enabled === 1;
-            }
-            return false;
-          });
-        }
-      });
-    },
     deleteCartItem(id) {
-      const self = this;
-      const api = `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_PATH}/cart/${id}`;
-      // 保持 Loading 效果
-      self.status.deleteCartItem = id;
-      self.$http.delete(api).then((response) => {
-        if (response.data.success) {
-          self.getCartList();
-          self.$bus.$emit('message:push', response.data.message, 'danger');
-          // 更新 Header 和 Navbar 的購物車
-          self.$bus.$emit('updateCart');
-          self.$bus.$emit('updateCart:nav');
-          self.status.deleteCartItem = '';
-        }
+      this.status.deleteCartItem = id;
+      this.$store.dispatch('cartsModules/deleteCartItem', id).then(() => {
+        this.status.deleteCartItem = '';
       });
     },
     addCoupon() {
@@ -296,11 +259,18 @@ export default {
       self.$http.post(api, { data: coupon }).then((response) => {
         if (response.data.success) {
           self.status.isAddCoupon = true;
-          self.$bus.$emit('message:push', response.data.message, 'success');
-          self.getCartList();
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'success',
+          });
+          // 更新購物車
+          self.$store.dispatch('cartsModules/getCartList');
         } else {
           self.couponCode = '';
-          self.$bus.$emit('message:push', response.data.message, 'danger');
+          self.$store.dispatch('updateMessage', {
+            message: response.data.message,
+            status: 'danger',
+          });
         }
         self.status.addCouponLoading = false;
       });
@@ -320,16 +290,21 @@ export default {
                 `/checkout/check_order/${response.data.orderId}`,
               );
               self.user = {}; // 清空寄送資料
-              self.$bus.$emit('updateCart');
-              self.$bus.$emit('updateCart:nav');
+              self.$store.dispatch('cartsModules/getCartList');
             } else {
-              self.$bus.$emit('message:push', response.data.message, 'danger');
+              self.$store.dispatch('updateMessage', {
+                message: response.data.message,
+                status: 'danger',
+              });
             }
             self.status.checkoutLoading = false;
           });
         }
       });
     },
+  },
+  computed: {
+    ...mapGetters('cartsModules', ['carts', 'total', 'finalTotal']),
   },
   components: {
     ProcessBar,
