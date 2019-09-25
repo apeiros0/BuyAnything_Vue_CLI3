@@ -208,7 +208,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import Pagination from '@/components/Pagination.vue';
 
@@ -217,6 +216,7 @@ export default {
     return {
       coupons: [],
       tempCoupon: {},
+      pagination: {},
       isNew: false,
       isLoading: false,
       status: {
@@ -238,7 +238,7 @@ export default {
       self.$http.get(api).then((response) => {
         self.coupons = response.data.coupons;
         self.isLoading = false;
-        self.$store.dispatch('getPagination', response.data.pagination);
+        self.pagination = response.data.pagination;
       });
     },
     openModal(isNew, item, isDelete = false) {
@@ -351,7 +351,6 @@ export default {
       });
       return tempArray;
     },
-    ...mapGetters(['pagination']),
   },
   components: {
     Pagination,

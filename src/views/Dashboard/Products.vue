@@ -272,7 +272,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import Pagination from '@/components/Pagination.vue';
 
@@ -281,6 +280,7 @@ export default {
     return {
       products: [],
       tempProduct: {},
+      pagination: {},
       isNew: false,
       isLoading: false,
       status: {
@@ -302,7 +302,7 @@ export default {
         self.products = response.data.products;
         // console.log('products', self.products);
         self.isLoading = false;
-        self.$store.dispatch('getPagination', response.data.pagination);
+        self.pagination = response.data.pagination;
       });
     },
     openModal(isNew, item, isDelete = false) {
@@ -413,9 +413,6 @@ export default {
         }
       });
     },
-  },
-  computed: {
-    ...mapGetters(['pagination']),
   },
   components: {
     Pagination,

@@ -65,6 +65,7 @@ export default {
   },
   computed: {
     // 由 Header 取得 allProducts，所以能進行過濾
+    // 因為資料已經儲存在 vuex 中，所以能透過 Header 取得 allProducts
     ...mapGetters('productsModules', ['filterCategory']),
   },
 };

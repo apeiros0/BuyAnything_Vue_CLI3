@@ -11,16 +11,11 @@ export default new Vuex.Store({
   strict: process.env.VUE_APP_NODE_ENV !== 'production',
   state: {
     isLoading: false,
-    pagination: {},
     messages: [],
   },
   mutations: {
     ISLOADING(state, payload) {
       state.isLoading = payload;
-    },
-    // pagination
-    PAGES(state, payload) {
-      state.pagination = payload;
     },
     // Alert Message
     UPDATEMESSAGE(state, payload) {
@@ -38,9 +33,6 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getPagination(context, payload) {
-      context.commit('PAGES', payload);
-    },
     // Alert Message
     updateMessage(context, { message, status }) {
       const timestamp = Math.floor(new Date() / 1000);
@@ -64,9 +56,6 @@ export default new Vuex.Store({
   getters: {
     isLoading(state) {
       return state.isLoading;
-    },
-    pagination(state) {
-      return state.pagination;
     },
     messages(state) {
       return state.messages;

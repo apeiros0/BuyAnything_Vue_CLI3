@@ -40,10 +40,6 @@
           </template>
         </div>
         <div class="d-flex justify-content-end" v-if="categoryName === ''">
-          <Pagination
-            :pagination="pagination"
-            @getPage="getProducts"
-          ></Pagination>
         </div>
       </div>
     </div>
@@ -53,32 +49,25 @@
 <script>
 import { mapGetters } from 'vuex';
 import ProductCard from '@/components/ProductCard.vue';
-import Pagination from '@/components/Pagination.vue';
 
 export default {
   // 接收網址傳遞過來的參數
   props: ['category'],
   data() {
     return {
-      pagination: {},
       categoryName: '',
     };
   },
   created() {
     this.categoryName = this.$route.query.category || ''; // 如果其他頁面有傳遞 分類 的參數，便使用其值
-    this.getProducts();
   },
-  methods: {
-    getProducts(page = 1) {
-      this.$store.dispatch('productsModules/getProducts', page);
-    },
-  },
+  methods: {},
   computed: {
     filterProduct() {
       const self = this;
       // 當為 空值 時，便回傳 全部商品 (有分頁)
       if (self.categoryName === '') {
-        return self.products;
+        return self.allProducts;
       }
       // 過濾 分類 相同的產品
       return self.allProducts.filter(
@@ -86,12 +75,11 @@ export default {
       );
     },
     // allProducts 透過 Header 取得 data
-    ...mapGetters('productsModules', ['products', 'allProducts', 'filterCategory']),
+    ...mapGetters('productsModules', ['allProducts', 'filterCategory']),
     ...mapGetters(['isLoading']),
   },
   components: {
     ProductCard,
-    Pagination,
   },
 };
 </script>

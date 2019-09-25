@@ -38,9 +38,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
+  // pagination 不一定要使用到 vuex，因為其接收的資料會依各個元件而有所不同 (每個 pagination 皆獨立)，
+  // 維持獨立狀態可在同個元件中使用到多個 pagination (不一定會這麼做，但可沿用獨立元件的概念)
+  // 如果 pagination 使用 vuex 的話，每頁的預設 pagination 會錯亂
+  props: ['pagination'],
   methods: {
     // 先透過 vuex products 取得分頁 data，再透過 getPage 來取得點擊的分頁
     getPage(page) {
@@ -50,9 +52,6 @@ export default {
       this.$emit('getPage', page);
     },
   },
-  computed: {
-    ...mapGetters(['pagination']),
-  }
 };
 </script>
 
