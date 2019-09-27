@@ -6,13 +6,11 @@
     </div>
 
     <div class="row no-gutters justify-content-center align-items-center">
-      <div
-        class="col-6 col-lg-3"
-        v-for="item in filterNewProduct"
-        :key="item.id"
-      >
-        <ProductCard :product="item"></ProductCard>
-      </div>
+      <template v-for="(item, index) in filterNewProduct">
+        <div class="col-6 col-lg-3" :key="item.id" v-if="index < 4">
+          <ProductCard :product="item"></ProductCard>
+        </div>
+      </template>
     </div>
   </section>
 </template>
@@ -34,11 +32,11 @@ export default {
     },
     // 透過 Header 取得 allProducts 讓 filterNewProduct 能過濾產品
     ...mapGetters('productsModules', ['allProducts']),
-    ...mapGetters(['isLoading']),
+    ...mapGetters(['isLoading'])
   },
   components: {
-    ProductCard,
-  },
+    ProductCard
+  }
 };
 </script>
 

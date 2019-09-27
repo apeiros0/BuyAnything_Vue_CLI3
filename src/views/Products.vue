@@ -40,6 +40,7 @@
           </template>
         </div>
         <div class="d-flex justify-content-end" v-if="categoryName === ''">
+          <Pagination :pagination="pagination" @getPage="getPage"></Pagination>
         </div>
       </div>
     </div>
@@ -49,6 +50,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import ProductCard from '@/components/ProductCard.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
   // 接收網址傳遞過來的參數
@@ -56,23 +58,59 @@ export default {
   data() {
     return {
       categoryName: '',
+      pagination: {},
+      currentPage: 0
     };
   },
   created() {
     this.categoryName = this.$route.query.category || ''; // 如果其他頁面有傳遞 分類 的參數，便使用其值
   },
-  methods: {},
+  methods: {
+    getPage(page) {
+      this.currentPage = page - 1;
+    },
+  },
   computed: {
     filterProduct() {
       const self = this;
+      const oldProducts = [];
+      const newProducts = [];
+      // 將 即將上市 產品移至後方
+      // 先把全部產品分成 oldProducts 和 newProducts
+      self.allProducts.forEach((item) => {
+        if (!item.is_enabled) {
+          newProducts.push(item);
+        } else {
+          oldProducts.push(item);
+        }
+      });
+      // 再使用 concat 合併 oldProducts 和 newProducts (concat 會 return new array)
+      const products = oldProducts.concat(newProducts);
+
       // 當為 空值 時，便回傳 全部商品 (有分頁)
       if (self.categoryName === '') {
-        return self.allProducts;
+        // pagination
+        const pagination = [];
+        products.forEach((item, index) => {
+          // 先取得總共有多少頁
+          if (index % 10 === 0) {
+            pagination.push([]);
+          }
+          const page = Number.parseInt(index / 10, 10); // 每一頁塞入資料 (使用 index / 每頁多少筆資料 來計算)
+          pagination[page].push(item);
+        });
+        // 分頁內容
+        self.pagination = {
+          total_pages: pagination.length,
+          current_page: self.currentPage + 1, // 當前頁
+          has_pre: self.currentPage + 1 !== 1, // 當前頁為第一頁時，回傳 false
+          has_next: self.currentPage + 1 !== pagination.length, // 當前頁為最末頁時，回傳 false
+          category: null
+        };
+        return pagination[self.currentPage];
       }
       // 過濾 分類 相同的產品
-      return self.allProducts.filter(
-        item => item.category === self.categoryName,
-      );
+      return products.filter(item => item.category === self.categoryName);
     },
     // allProducts 透過 Header 取得 data
     ...mapGetters('productsModules', ['allProducts', 'filterCategory']),
@@ -80,7 +118,8 @@ export default {
   },
   components: {
     ProductCard,
-  },
+    Pagination,
+  }
 };
 </script>
 
