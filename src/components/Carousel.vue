@@ -4,7 +4,7 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="d-block w-100 bg-cover carousel-image carousel-image1">
-            <div class="carousel-content">
+            <div class="carousel-content carousel-content-light p-5">
               <p class="carousel-title font-weight-bold d-none d-md-block">
                 只要你想要，沒有買不到
               </p>
