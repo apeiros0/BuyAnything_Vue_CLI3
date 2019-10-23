@@ -1,6 +1,6 @@
 <template>
-  <footer class="footer py-4 mt-5">
-    <div class="footer-body container d-flex flex-column align-items-end">
+  <footer class="footer py-4 mt-5 container">
+    <div class="footer-body d-flex flex-column align-items-end">
       <div>
         <h2 class="font-weight-bold">Follow Us</h2>
 

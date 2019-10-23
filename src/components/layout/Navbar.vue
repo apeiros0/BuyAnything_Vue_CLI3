@@ -1,9 +1,9 @@
 <template>
-  <section>
+  <nav class="container">
     <!-- Nav -->
-    <section class="navbar-shadow d-none d-md-block">
+    <section class="navbar-border d-none d-md-block">
       <nav
-        class="navbar navbar-expand-md navbar-light d-flex align-items-center container"
+        class="navbar navbar-expand-md navbar-light d-flex align-items-center row"
       >
         <ul class="navbar-nav">
           <li class="nav-item mr-3">
@@ -80,7 +80,7 @@
         </ul>
       </nav>
     </section>
-  </section>
+  </nav>
 </template>
 
 <script>

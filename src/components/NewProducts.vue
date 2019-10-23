@@ -1,9 +1,9 @@
 <template>
-  <section>
+  <div>
     <loading :active.sync="isLoading"></loading>
-    <div class="text-center my-4">
+    <section class="text-center my-4">
       <h2 class="products-title font-weight-bold mb-0">即將上市</h2>
-    </div>
+    </section>
 
     <div class="row no-gutters justify-content-center align-items-center">
       <template v-for="(item, index) in filterNewProduct">
@@ -12,7 +12,7 @@
         </div>
       </template>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>

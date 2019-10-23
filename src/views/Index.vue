@@ -1,12 +1,10 @@
 <template>
-  <section>
-    <section class="container">
-      <Carousel></Carousel>
-      <Banner></Banner>
-      <Category></Category>
-      <NewProducts></NewProducts>
-    </section>
-  </section>
+  <div class="container">
+    <Carousel></Carousel>
+    <Banner></Banner>
+    <Category></Category>
+    <NewProducts></NewProducts>
+  </div>
 </template>
 
 <script>

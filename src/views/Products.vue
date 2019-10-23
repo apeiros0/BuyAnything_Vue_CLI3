@@ -3,7 +3,7 @@
     <loading :active.sync="isLoading"></loading>
     <div class="row">
       <div class="col-md-3">
-        <div class="list-group sticky-top">
+        <section class="list-group sticky-top">
           <h2 href="#" class="list-group-item bg-light h4 font-weight-bold">
             分類
           </h2>
@@ -24,7 +24,7 @@
               >{{ item }}</a
             >
           </template>
-        </div>
+        </section>
       </div>
       <div class="col-md-9 mt-3 mt-md-0">
         <div>

@@ -3,6 +3,8 @@
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   @include media-breakpoint-down(sm) {
     height: 15rem;
   }

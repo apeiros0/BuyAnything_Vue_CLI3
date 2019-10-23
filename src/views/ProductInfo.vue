@@ -1,5 +1,5 @@
 <template>
-  <section class="container fixed-margin-top mt-sm-4">
+  <div class="container fixed-margin-top mt-sm-4">
     <loading :active.sync="isLoading"></loading>
     <Alert></Alert>
     <nav aria-label="breadcrumb">
@@ -23,7 +23,7 @@
         ></div>
       </div>
       <div class="col-lg-5">
-        <div class="product-info ml-0 ml-lg-3 mt-4 mt-lg-0">
+        <section class="product-info ml-0 ml-lg-3 mt-4 mt-lg-0">
           <h1 class="h2">{{ product.title }}</h1>
           <div class="mt-3">
             <del
@@ -81,24 +81,23 @@
               <span v-else>加入購物車</span>
             </button>
           </div>
-        </div>
+        </section>
       </div>
     </div>
     <div class="mt-6">
-      <h2>商品描述</h2>
-      <div class="mt-2">
+      <section class="mt-2">
+        <h2>商品描述</h2>
         <p class="product-description">{{ product.description }}</p>
-      </div>
-
-      <h2 class="mt-5">特色</h2>
-      <div class="mt-2">
+      </section>
+      <section>
+        <h2 class="mt-5">特色</h2>
         <p class="product-description">
           在哪裡跌倒，因為沒有人在看你，但房東不准，人若不帥，再暖都是變態。弱者等待時機，我承認自己的結論有九十九次是過錯的。
           我要把雙手身出來讓世人看，我儘管奪患有這麼多土地，逝世後卻連一點塵埃也沒有帶走，你不能以一個握緊的拳頭握手
         </p>
-      </div>
+      </section>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
