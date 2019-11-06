@@ -8,7 +8,9 @@
           <router-link to="/products">商品</router-link>
         </li>
         <li class="breadcrumb-item">
-          <router-link :to="{ path: '/products', query: { category: product.category } }">{{ product.category }}</router-link>
+          <router-link :to="{ path: '/products', query: { category: product.category } }">{{
+            product.category
+          }}</router-link>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
           {{ product.title }}
@@ -50,7 +52,7 @@
                   value="1"
                   maxlength="2"
                   class="form-control jq-qty-number qty-input"
-                  v-model="productQty"
+                  v-model.number="productQty"
                   :disabled="product.is_enabled !== 1"
                 />
                 <a
@@ -64,11 +66,10 @@
             <span class="ml-3">/ {{ product.unit }}</span>
             <div class="ml-auto">
               <span class="d-block text-left">總計</span>
-              <span class="h2 d-block mb-0 text-primary">{{
-                calculatePrice | currency
-              }}</span>
+              <span class="h2 d-block mb-0 text-primary">{{ calculatePrice | currency }}</span>
             </div>
           </div>
+          <span class="text-danger mt-2 d-block" v-if="!productQty">請輸入數量</span>
           <div class="mt-5">
             <button
               type="button"
@@ -111,8 +112,8 @@ export default {
       product: {},
       productQty: 1,
       status: {
-        cartLoading: false,
-      },
+        cartLoading: false
+      }
     };
   },
   created() {
@@ -134,17 +135,18 @@ export default {
     },
     addToCart() {
       const self = this;
-      if (Number.isNaN(self.productQty)) {
-        self.productQty = 1;
-      }
+      // productQty 為空就什麼都不做
+      if (self.productQty === '') return;
       self.status.cartLoading = true;
-      self.$store.dispatch('cartsModules/addToCart', {
-        id: self.productId,
-        qty: Math.abs(self.productQty), // 將 負號 轉為正值
-      }).then(() => {
-        self.status.cartLoading = false;
-        self.productQty = 1;
-      });
+      self.$store
+        .dispatch('cartsModules/addToCart', {
+          id: self.productId,
+          qty: Math.abs(self.productQty) // 將 負號 轉為正值
+        })
+        .then(() => {
+          self.status.cartLoading = false;
+          self.productQty = 1;
+        });
     },
     calculateQty(isAdd) {
       // 10 = 十進位
@@ -163,21 +165,28 @@ export default {
 
       $('.jq-qty-number').val(num);
       this.productQty = num;
-    },
+    }
   },
   computed: {
+    // computed 裡不能變更 data 的值，要用 watch 來監控
     calculatePrice() {
-      let qty = Math.abs(this.productQty);
-      // 把非數字的數量都當成 1
-      if (Number.isNaN(this.productQty)) {
-        qty = 1;
-      }
-      return qty * this.product.price;
-    },
+      return Math.abs(this.productQty) * this.product.price;
+    }
   },
   components: {
-    Alert,
+    Alert
   },
+  watch: {
+    // 透過 watch 來監控 productQty
+    productQty() {
+      // 把非數字和數字 0 的數量都當成 '' (空的，沒有任何東西)
+      if (
+        Number.isNaN(this.productQty) || typeof this.productQty === 'string' || this.productQty === 0
+      ) {
+        this.productQty = '';
+      }
+    }
+  }
 };
 </script>
 

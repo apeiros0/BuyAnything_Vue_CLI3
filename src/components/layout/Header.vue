@@ -202,7 +202,7 @@ export default {
     searchProducts() {
       const self = this;
       // 使用 filter 過濾空值
-      self.searchResultArray = self.allProducts.filter(item => /* 透過 match 找出要搜尋的產品 */item.title.match(self.search));
+      self.searchResultArray = self.allProducts.filter(item => /* 透過 match 找出要搜尋的產品 */ item.title.match(self.search));
     },
     getProductInfo(id) {
       const self = this;

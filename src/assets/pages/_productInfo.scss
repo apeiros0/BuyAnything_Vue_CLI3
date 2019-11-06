@@ -14,6 +14,14 @@
 .qty-input {
   text-align: center;
   user-select: none;
+  // chrome 隱藏 input[number] 的 button
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  // Firefox 隱藏 input[number] 的 button
+  -moz-appearance: textfield; 
 }
 
 .qty-btn {
