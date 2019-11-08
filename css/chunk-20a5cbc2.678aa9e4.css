@@ -1,0 +1,1 @@
+.message-alert{position:fixed;top:56px;right:20px;z-index:1100}.message-alert-enter-active,.message-alert-leave-active{-webkit-transition:all .3s ease;transition:all .3s ease}.message-alert-enter,.message-alert-leave-to{-webkit-transform:translateX(200%);transform:translateX(200%)}
