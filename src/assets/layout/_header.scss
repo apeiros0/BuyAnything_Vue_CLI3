@@ -64,7 +64,7 @@ $bg-hover: darken($primary, 30%) !important;
     left: auto;
     margin-top: 0.3rem;
     z-index: 4;
-    box-shadow: 0rem 0rem 0.625rem 0.1875rem $gray-300;
+    box-shadow: 0px 3px 5px rgba(black, 0.3);
     background-color: #fff;
   }
 
@@ -84,7 +84,7 @@ $bg-hover: darken($primary, 30%) !important;
     }
     &-link {
       color: $black;
-      transition: all .3s ease;
+      transition: all 0.3s ease;
       &:hover {
         color: $primary;
       }

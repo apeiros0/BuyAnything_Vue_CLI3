@@ -6,10 +6,7 @@
       <!-- Logo -->
       <router-link to="/index" class="mr-auto">
         <h1 class="d-none d-lg-block mb-0 font-weight-bold letter-space">Buy <u>Anything</u></h1>
-        <div
-          class="header-logo bg-cover d-block d-lg-none"
-          alt="shop_logo"
-        ></div>
+        <div class="header-logo bg-cover d-block d-lg-none" alt="shop_logo"></div>
       </router-link>
 
       <!-- Nav Button -->
@@ -84,9 +81,7 @@
             @click.prevent="openList()"
           >
             <i class="fas fa-cart-plus text-white">
-              <span class="badge badge-danger icon-badge">{{
-                carts.length
-              }}</span>
+              <span class="badge badge-danger icon-badge">{{ carts.length }}</span>
             </i>
           </div>
 
@@ -96,7 +91,9 @@
           >
             <h3 class="dropdown-header">
               購物車
-              <span class="text-danger" v-if="total === 0"><span class="text-dark">：</span>我要吃商品</span>
+              <span class="text-danger" v-if="total === 0"
+                ><span class="text-dark">：</span>我要吃商品</span
+              >
             </h3>
             <div
               class="dropdown-item d-flex align-items-center mb-3"
@@ -108,10 +105,7 @@
                 @click="deleteCartItem(item.id)"
                 :class="{ disabled: status.deleteCartItem }"
               >
-                <i
-                  class="fas fa-spinner fa-pulse"
-                  v-if="status.deleteCartItem === item.id"
-                ></i>
+                <i class="fas fa-spinner fa-pulse" v-if="status.deleteCartItem === item.id"></i>
                 <i class="fas fa-trash-alt" v-else></i>
               </div>
               <div
@@ -122,9 +116,7 @@
                 <h4 class="h6 mb-0">{{ item.product.title }}</h4>
                 <span>數量：{{ item.qty }}</span>
               </div>
-              <span class="ml-auto text-success">{{
-                item.total | currency
-              }}</span>
+              <span class="ml-auto text-success">{{ item.total | currency }}</span>
             </div>
             <hr />
             <div class="dropdown-item text-right mb-3">
@@ -135,7 +127,7 @@
               class="btn btn-warning btn-block btn-lg"
               href="#"
               @click.prevent="goToCheckout"
-              :class="{ 'disabled': total === 0 }"
+              :class="{ disabled: total === 0 }"
               >結帳</a
             >
           </div>
@@ -155,9 +147,9 @@ export default {
     return {
       searchResultArray: [],
       status: {
-        deleteCartItem: '',
+        deleteCartItem: ''
       },
-      search: '',
+      search: ''
     };
   },
   created() {
@@ -224,16 +216,17 @@ export default {
     },
     ...mapActions('productsModules', ['getAllProducts']),
     // 取得購物車內容
-    ...mapActions('cartsModules', ['getCartList']),
+    ...mapActions('cartsModules', ['getCartList'])
   },
   computed: {
     ...mapGetters('productsModules', ['allProducts']),
-    ...mapGetters('cartsModules', ['carts', 'total']),
+    ...mapGetters('cartsModules', ['carts', 'total'])
   },
   components: {
-    Alert,
-  },
+    Alert
+  }
 };
 </script>
 
-<style></style>
+<style>
+</style>

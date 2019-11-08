@@ -15,17 +15,19 @@
         >
           點我領取
         </button>
-        <div v-else>
-          <span class="h2 mt-2 font-weight-bold text-white coupon-code">
-            <span>BAT008</span>
-            <i
-              class="far fa-copy text-white icon-copy active"
-              @click.prevent="copyCouponCode"
-              v-if="!isCopied"
-            ></i>
-            <i class="far fa-check-circle icon-copy" v-else></i>
-          </span>
-        </div>
+        <transition name="icon">
+          <div v-if="isCoupon">
+            <span class="h2 mt-2 font-weight-bold text-white coupon-code">
+              <span @click.prevent="copyCouponCode">BAT008</span>
+              <transition name="icon">
+                <i class="far fa-copy text-white icon-copy active" v-if="!isCopied"></i>
+              </transition>
+              <transition name="icon">
+                <i class="far fa-check-circle icon-copy text-warning" v-if="isCopied"></i>
+              </transition>
+            </span>
+          </div>
+        </transition>
       </div>
     </div>
   </section>
@@ -38,7 +40,7 @@ export default {
   data() {
     return {
       isCoupon: false,
-      isCopied: false,
+      isCopied: false
     };
   },
   methods: {
@@ -49,14 +51,20 @@ export default {
       // 將 input append 到 body
       $('body').append(temp);
       // // 把 coupon (清除空白後) 附加到 input 上，並用 select 做全選
-      temp.val($('.coupon-code').text().trim()).select();
+      temp
+        .val(
+          $('.coupon-code')
+            .text()
+            .trim()
+        )
+        .select();
       // 接著使用 execCommand:copy 複製到剪貼簿
       document.execCommand('copy');
       // 最後移除 input
       temp.remove();
       this.isCopied = true;
-    },
-  },
+    }
+  }
 };
 </script>
 

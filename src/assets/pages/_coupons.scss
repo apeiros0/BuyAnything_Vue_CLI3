@@ -1,11 +1,14 @@
 .coupon-content {
-  background-color: darken($success, 20%);
-  border: .7rem solid darken($warning, 14%);
-  box-shadow: 0.3125rem 0.3125rem 0.15625rem $gray-500;
+  // background-color: darken($success, 15%);
+  background: linear-gradient(125deg, $success 0%, darken($success, 10%) 50%, darken($success, 10%) 100%);
+  border: 0.7rem solid darken($warning, 10%);
+  box-shadow: 0.3125rem 0.3125rem $gray-400;
 }
 
 .coupon-code {
   position: relative;
+  cursor: pointer;
+  user-select: none;
 }
 
 .icon-copy {
@@ -13,13 +16,15 @@
   top: 0;
   right: -1.7rem;
   font-size: 1.2rem;
-  user-select: none;
+}
 
-  &.active {
-    cursor: pointer;
-    transition: all .3s ease;
-    &:hover {
-      color: $warning !important;
-    }
-  }
+.icon-enter-active,
+.icon-leave-active {
+  transition: all .3s ease;
+}
+
+.icon-enter,
+.icon-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
